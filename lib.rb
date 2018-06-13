@@ -10,7 +10,9 @@ end
 
 def post_create_application(type, url)
   droplet_ep = 'https://api.line.me/liff/v1/apps'
-  RestClient.post(droplet_ep, {view: {type: type, url: url } }, {:Authorization => "bearer #{@token}", :content_type => :json}) { |response, request, result| response.body }
+  RestClient::Request.execute(method: :post, url: droplet_ep,
+                            payload: "{view: {type: #{type}, url: #{url} } }", headers: {:Authorization => "bearer #{@token}"})
+  # RestClient.post(droplet_ep, {view: {type: type, url: url } }, {:Authorization => "bearer #{@token}", :content_type => :json})
 end
 
 def delete_delete_application(liff_id)
