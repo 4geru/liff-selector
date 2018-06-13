@@ -3,7 +3,7 @@ require './show'
 
 def delete
   puts '> select delete application id'
-  id = get.gsub("\n", '')
+  id = gets.gsub("\n", '').to_i
   application = get_all_application[id-1]
   puts "#{id}. #{application['liffId']}\t#{application['view']['type']}\t#{application['view']['url']}"
   puts '> delete this application[Y/N]'
