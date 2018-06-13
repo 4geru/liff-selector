@@ -1,9 +1,12 @@
 require './lib'
 
-if __FILE__ == $0
-  res = get_all_application
+def show
   puts "id liffId\t\ttype\turl"
-  res['apps'].each_with_index do |v, i|
-    puts "#{i+1}. #{v['liffId']}\t#{v['view']['type']}\t#{v['view']['url']}"
+  get_all_application.each_with_index do |application, i|
+    puts "#{i+1}. #{application['liffId']}\t#{application['view']['type']}\t#{application['view']['url']}"
   end
+end
+
+if __FILE__ == $0
+  show
 end
