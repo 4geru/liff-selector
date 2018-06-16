@@ -1,9 +1,8 @@
-# frozen_string_literal: true
-
 source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-# gem "rails"
+# Specify your gem's dependencies in liff_selector.gemspec
+gemspec
 gem 'rest-client'
 gem 'dotenv'
