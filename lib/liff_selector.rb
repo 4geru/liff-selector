@@ -36,12 +36,12 @@ module LiffSelector
   def self.same
     apps = all_apps
     uniq_app = apps.map{|app| {type: app['view']['type'], url: app['view']['url'] } }.uniq
-    delete_apps = uniq_app.map{|uapp|
+    delete_apps = uniq_app.map{|delete_app|
       same_apps = apps
       .map.with_index{|app, i| app.store('id', i + 1); app }
-      .select{|app| uapp[:type] == app['view']['type'] and uapp[:url] == app['view']['url']}
+      .select{|app| delete_app[:type] == app['view']['type'] and delete_app[:url] == app['view']['url']}
 
-      puts "> \"type\": #{uapp[:type]}, \"url\": #{uapp[:url]}"
+      puts "> \"type\": #{delete_app[:type]}, \"url\": #{delete_app[:url]}"
       same_apps.map{|app| puts " - id: #{app['id']}, liffId: #{app['liffId']}" }
       same_apps[1..-1]
     }.flatten!
