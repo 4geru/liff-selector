@@ -10,8 +10,10 @@ module LiffSelector
     when 'same'
       same
     when 'create'
+      raise ArgumentError, 'give _type_ _url_' if argv.length != 3
       create(type: argv[1], url: argv[2])
     when 'delete'
+      raise ArgumentError, 'give _liff_id_' if argv.length != 2
       delete(liff_id: argv[1])
     else 
       raise NotImplementedError, 'unknow command given'
