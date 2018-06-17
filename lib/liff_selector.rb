@@ -41,8 +41,8 @@ module LiffSelector
       .map.with_index{|app, i| app.store('id', i + 1); app }
       .select{|app| uapp[:type] == app['view']['type'] and uapp[:url] == app['view']['url']}
 
-      puts "> \"type\" : #{uapp[:type]}\t \"url\" : #{uapp[:url]}"
-      puts " - same app No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
+      puts "> \"type\": #{uapp[:type]}, \"url\": #{uapp[:url]}"
+      same_apps.map{|app| puts " - id: #{app['id']}, liffId: #{app['liffId']}" }
       same_apps[1..-1]
     }.flatten!
   end
@@ -58,30 +58,18 @@ module LiffSelector
   end
 
   def self.clean
-    apps = all_apps
-    uniq_app = apps.map{|app| {type: app['view']['type'], url: app['view']['url'] } }.uniq
-    delete_apps = uniq_app.map{|uapp|
-      same_apps = apps
-      .map.with_index{|app, i| app.store('id', i + 1); app }
-      .select{|app| uapp[:type] == app['view']['type'] and uapp[:url] == app['view']['url']}
+    delete_apps = same
 
-      puts ">== same app No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
-      puts "> \"type\" : #{uapp[:type]}\t \"url\" : #{uapp[:url]}"
-      same_apps[1..-1]
-    }.flatten!
+    raise ArgumentError, 'not same app' if delete_apps.empty?
 
-    unless delete_apps.empty?
-      begin
-        delete_apps.map{|app|
-          raise unless delete_app(app['liffId'])
-          puts ">> delete \"id\" : #{app[:id]}\t\"type\" : #{app[:type]}\t\"url\" : #{app[:url]}"
-        }
-        puts '> [SUCESS] delete app'
-      rescue
-        puts '> [FAILED] cannot delete app'
-      end
-    else
-      puts ">> There is not same app"
+    begin
+      delete_apps.map{|app|
+        delete_app(app["liffId"])
+        puts ">> delete \"id\": #{app["id"]}, \"type\": #{app["view"]["type"]}, \"url\": #{app["view"]["url"]}"
+      }
+      puts '> [SUCESS] delete app'
+    rescue
+      puts '> [FAILED] cannot delete app'
     end
   end
 
