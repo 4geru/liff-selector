@@ -4,7 +4,7 @@ require 'rest-client'
 
 module LiffSelector
   @token = ENV['LINE_TOKEN']
-
+  @request_url = 'https://api.line.me/liff/v1/apps'
   def self.run(argv)
     case argv[0]
     when 'show'
@@ -28,13 +28,13 @@ module LiffSelector
   # command
   def self.show
     puts "id liffId\t\ttype\turl"
-    self.get_all_application.each_with_index do |application, i|
-      puts "#{i+1}. #{application['liffId']}\t#{application['view']['type']}\t#{application['view']['url']}"
+    self.all_apps.each_with_index do |app, i|
+      puts "#{i+1}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
     end
   end
 
   def self.same
-    apps = get_all_application
+    apps = all_apps
     uniq_app = apps.map{|app| {type: app['view']['type'], url: app['view']['url'] } }.uniq
     delete_apps = uniq_app.map{|uapp|
       same_apps = apps
@@ -42,7 +42,7 @@ module LiffSelector
       .select{|app| uapp[:type] == app['view']['type'] and uapp[:url] == app['view']['url']}
 
       puts "> \"type\" : #{uapp[:type]}\t \"url\" : #{uapp[:url]}"
-      puts " - same application No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
+      puts " - same app No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
       same_apps[1..-1]
     }.flatten!
   end
@@ -50,22 +50,22 @@ module LiffSelector
   def self.create(type:, url:)
     raise ArgumentError, 'not correct uri' unless correct_url(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
-    puts '> make liff application'
-    response = JSON.parse(post_create_application(type, url))
+    puts '> make liff app'
+    response = JSON.parse(create_app(type, url))
 
-    puts '> [SUCESS] make application'
-    puts "> application uri : line://app/#{response['liffId']}"
+    puts '> [SUCESS] make app'
+    puts "> app uri : line://app/#{response['liffId']}"
   end
 
   def self.clean
-    apps = get_all_application
+    apps = all_apps
     uniq_app = apps.map{|app| {type: app['view']['type'], url: app['view']['url'] } }.uniq
     delete_apps = uniq_app.map{|uapp|
       same_apps = apps
       .map.with_index{|app, i| app.store('id', i + 1); app }
       .select{|app| uapp[:type] == app['view']['type'] and uapp[:url] == app['view']['url']}
 
-      puts ">== same application No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
+      puts ">== same app No.#{same_apps.map{|app| app['id'] }.join(' No.')} =="
       puts "> \"type\" : #{uapp[:type]}\t \"url\" : #{uapp[:url]}"
       same_apps[1..-1]
     }.flatten!
@@ -73,37 +73,35 @@ module LiffSelector
     unless delete_apps.empty?
       begin
         delete_apps.map{|app|
-          raise unless delete_delete_application(app['liffId'])
+          raise unless delete_app(app['liffId'])
           puts ">> delete \"id\" : #{app[:id]}\t\"type\" : #{app[:type]}\t\"url\" : #{app[:url]}"
         }
-        puts '> [SUCESS] delete application'
+        puts '> [SUCESS] delete app'
       rescue
-        puts '> [FAILED] cannot delete application'
+        puts '> [FAILED] cannot delete app'
       end
     else
-      puts ">> There is not same application"
+      puts ">> There is not same app"
     end
   end
 
   def self.delete(liff_id:)
-    application = get_all_application[liff_id.to_i-1]
-    puts "#{liff_id}. #{application['liffId']}\t#{application['view']['type']}\t#{application['view']['url']}"
-    if delete_delete_application(application['liffId'])
-      puts '> [SUCESS] delete application'
+    app = all_apps[liff_id.to_i-1]
+    puts "#{liff_id}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
+    if delete_app(app['liffId'])
+      puts '> [SUCESS] delete app'
     else
-      puts '> [FAILED] cannot delete application'
+      puts '> [FAILED] cannot delete app'
     end
   end
 
   # http request
-  def self.get_all_application
-    droplet_ep = 'https://api.line.me/liff/v1/apps'
-    res = JSON.parse(RestClient.get droplet_ep, { :Authorization => "bearer #{@token}" })['apps']
+  def self.all_apps
+    res = JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
   end
 
-  def self.delete_delete_application(liff_id)
-    droplet_ep = "https://api.line.me/liff/v1/apps/#{liff_id}"
-    RestClient.delete droplet_ep, { :Authorization => "bearer #{@token}" }
+  def self.delete_app(liff_id)
+    RestClient.delete "#{@request_url}/#{liff_id}", { :Authorization => "bearer #{@token}" }
   end
 
   def self.correct_url(url)
@@ -111,8 +109,7 @@ module LiffSelector
     status_code = RestClient.get(url)
   end
 
-  def self.post_create_application(type, url)
-    droplet_ep = 'https://api.line.me/liff/v1/apps'
-    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
+  def self.create_app(type, url)
+    RestClient.post(@request_url, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
   end
 end
