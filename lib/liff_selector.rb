@@ -132,6 +132,6 @@ module LiffSelector
   def self.post_create_application(type, url)
     token = ENV['LINE_TOKEN']
     droplet_ep = 'https://api.line.me/liff/v1/apps'
-    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{token}", :content_type => :json}) { |response, request, result| {status: response.code, liffId: result["liffId"]} }
+    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{token}", :content_type => :json}) { |response, request, result| {status: response.code, liffId: JSON.parse(response)["liffId"]} }
   end
 end
