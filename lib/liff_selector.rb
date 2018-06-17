@@ -116,7 +116,7 @@ module LiffSelector
       status_code = RestClient.get(url){ |response, request, result| response.code }
       return true if status_code == 200
     rescue TypeError, SocketError, URI::InvalidURIError
-      puts 'erroe'
+      puts 'error'
     end
     false
   end
