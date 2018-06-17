@@ -107,14 +107,8 @@ module LiffSelector
   end
 
   def self.correct_url(url)
-    begin
-      uri = URI.parse(url)
-      status_code = RestClient.get(url){ |response, request, result| response.code }
-      return true if status_code == 200
-    rescue TypeError, SocketError, URI::InvalidURIError
-      puts 'error'
-    end
-    false
+    uri = URI.parse(url)
+    status_code = RestClient.get(url)
   end
 
   def self.post_create_application(type, url)
