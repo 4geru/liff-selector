@@ -22,7 +22,62 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### show
+display all liff applications.
+
+```
+$ ./exe/liff_select show
+id liffId   type  url
+1. 1578425738-81wbQ6WM  full  https://example.com
+2. 1578425738-8AM1APKY  tall  https://esample.com/1
+```
+
+### same
+display same type and url liff applications.
+
+```
+./exe/liff_select same
+> "type": full, "url": https://example.com
+ - id: 1, liffId: XXXXXXXXXX-XXXXXXXX
+> "type": tall, "url": https://esample.com/1
+ - id: 2, liffId: XXXXXXXXXX-XXXXXXXX
+```
+
+### create
+create new liff application. give type, url
+
+```
+./exe/liff_select create compact https://example.com
+> make liff app
+> [SUCESS] make app
+> app uri : line://app/XXXXXXXXXX-XXXXXXXX
+```
+
+### delete
+
+```
+./exe/liff_select delete 1
+1. XXXXXXXXXX-XXXXXXXX  compact https://example.com
+> [SUCESS] delete app
+```
+
+### clean
+delete same type and url applications
+
+```
+./exe/liff_select clean
+> "type": tall, "url": https://liff-a4geru.c9users.io/charge
+ - id: 1, liffId: 1578425738-8AM1APKY
+> "type": compact, "url": https://liff-a4geru.c9users.io/
+ - id: 2, liffId: 1578425738-GBp65o2R
+ - id: 3, liffId: 1578425738-WeqQXxKp
+ - id: 5, liffId: 1578425738-yLqlrmVE
+> "type": compact, "url": https://liff-a4geru.c9users.io/charge
+ - id: 4, liffId: 1578425738-YbD5yxAq
+>> delete "id": 3, "type": compact, "url": https://liff-a4geru.c9users.io/
+>> delete "id": 5, "type": compact, "url": https://liff-a4geru.c9users.io/
+> [SUCESS] delete app
+```
 
 ## Development
 

@@ -71,7 +71,7 @@ module LiffSelector
         RestClient.delete "#{@request_url}/#{app["liffId"]}", { :Authorization => "bearer #{@token}" }
         puts ">> delete \"id\": #{app["id"]}, \"type\": #{app["view"]["type"]}, \"url\": #{app["view"]["url"]}"
       }
-      puts '> [SUCESS] delete app'
+      puts '> [SUCESS] delete apps'
     rescue
       puts '> [FAILED] cannot delete app'
     end
