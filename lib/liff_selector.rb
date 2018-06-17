@@ -3,6 +3,8 @@ require 'json'
 require 'rest-client'
 
 module LiffSelector
+  @token = ENV['LINE_TOKEN']
+
   def self.run(argv)
     case argv[0]
     when 'show'
@@ -95,15 +97,13 @@ module LiffSelector
 
   # http request
   def self.get_all_application
-    token = ENV['LINE_TOKEN']
     droplet_ep = 'https://api.line.me/liff/v1/apps'
-    res = JSON.parse(RestClient.get droplet_ep, { :Authorization => "bearer #{token}" })['apps']
+    res = JSON.parse(RestClient.get droplet_ep, { :Authorization => "bearer #{@token}" })['apps']
   end
 
   def self.delete_delete_application(liff_id)
-    token = ENV['LINE_TOKEN']
     droplet_ep = "https://api.line.me/liff/v1/apps/#{liff_id}"
-    RestClient.delete droplet_ep, { :Authorization => "bearer #{token}" } { |response, request, result| response.code == 200 }
+    RestClient.delete droplet_ep, { :Authorization => "bearer #{@token}" }
   end
 
   def self.correct_url(url)
@@ -118,8 +118,7 @@ module LiffSelector
   end
 
   def self.post_create_application(type, url)
-    token = ENV['LINE_TOKEN']
     droplet_ep = 'https://api.line.me/liff/v1/apps'
-    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{token}", :content_type => :json})
+    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
   end
 end
