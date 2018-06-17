@@ -28,7 +28,7 @@ module LiffSelector
   # command
   def self.show
     puts "id liffId\t\ttype\turl"
-    self.all_apps.each_with_index do |app, i|
+    all_apps.each_with_index do |app, i|
       puts "#{i+1}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
     end
   end
@@ -48,13 +48,16 @@ module LiffSelector
   end
 
   def self.create(type:, url:)
-    raise ArgumentError, 'not correct uri' unless correct_url(url)
+    raise ArgumentError, 'not correct uri' unless correct_url?(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
     puts '> make liff app'
-    response = JSON.parse(create_app(type, url))
+
+    # api request
+    response = RestClient.post(@request_url, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
+    result = JSON.parse(response)
 
     puts '> [SUCESS] make app'
-    puts "> app uri : line://app/#{response['liffId']}"
+    puts "> app uri : line://app/#{result['liffId']}"
   end
 
   def self.clean
@@ -64,7 +67,8 @@ module LiffSelector
 
     begin
       delete_apps.map{|app|
-        delete_app(app["liffId"])
+        # api request
+        RestClient.delete "#{@request_url}/#{app["liffId"]}", { :Authorization => "bearer #{@token}" }
         puts ">> delete \"id\": #{app["id"]}, \"type\": #{app["view"]["type"]}, \"url\": #{app["view"]["url"]}"
       }
       puts '> [SUCESS] delete app'
@@ -76,11 +80,10 @@ module LiffSelector
   def self.delete(liff_id:)
     app = all_apps[liff_id.to_i-1]
     puts "#{liff_id}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
-    if delete_app(app['liffId'])
-      puts '> [SUCESS] delete app'
-    else
-      puts '> [FAILED] cannot delete app'
-    end
+
+    # api request
+    RestClient.delete "#{@request_url}/#{app['liffId']}", { :Authorization => "bearer #{@token}" }
+    puts '> [SUCESS] delete app'
   end
 
   # http request
@@ -88,16 +91,8 @@ module LiffSelector
     res = JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
   end
 
-  def self.delete_app(liff_id)
-    RestClient.delete "#{@request_url}/#{liff_id}", { :Authorization => "bearer #{@token}" }
-  end
-
-  def self.correct_url(url)
+  def self.correct_url?(url)
     uri = URI.parse(url)
     status_code = RestClient.get(url)
-  end
-
-  def self.create_app(type, url)
-    RestClient.post(@request_url, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
   end
 end
