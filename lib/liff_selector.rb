@@ -48,15 +48,11 @@ module LiffSelector
   def self.create(type:, url:)
     raise ArgumentError, 'not correct uri' unless correct_url(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
-    puts '>> making liff application >>'
-    response = post_create_application(type, url)
-    case response[:status]
-    when 200
-      puts '> [SUCESS] make application'
-      puts "> application uri : line://app/#{response[:liffId]}"
-    else
-      puts '> [FAILED] make application'
-    end
+    puts '> make liff application'
+    response = JSON.parse(post_create_application(type, url))
+
+    puts '> [SUCESS] make application'
+    puts "> application uri : line://app/#{response['liffId']}"
   end
 
   def self.clean
@@ -124,6 +120,6 @@ module LiffSelector
   def self.post_create_application(type, url)
     token = ENV['LINE_TOKEN']
     droplet_ep = 'https://api.line.me/liff/v1/apps'
-    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{token}", :content_type => :json}) { |response, request, result| {status: response.code, liffId: JSON.parse(response)["liffId"]} }
+    RestClient.post(droplet_ep, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{token}", :content_type => :json})
   end
 end
