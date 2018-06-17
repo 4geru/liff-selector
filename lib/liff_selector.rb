@@ -46,18 +46,10 @@ module LiffSelector
   end
 
   def self.create(type:, url:)
-    unless correct_url(url)
-      puts 'it is not correct uri'
-      return
-    end
-    unless ["compact", "tall", "full"].include?(type)
-      puts 'it is not correct type'
-      return
-    end
-    puts '> correct type!'
+    raise ArgumentError, 'not correct uri' unless correct_url(url)
+    raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
     puts '>> making liff application >>'
     response = post_create_application(type, url)
-    puts "status #{response}"
     case response[:status]
     when 200
       puts '> [SUCESS] make application'
