@@ -39,7 +39,7 @@ $ export LINE_TOKEN="line_access_token"
 display all liff applications.
 
 ```
-$ ./exe/liff_select show
+$ $ bundle exec liff_select show
 id liffId   type  url
 1. 1578425738-81wbQ6WM  full  https://example.com
 2. 1578425738-8AM1APKY  tall  https://esample.com/1
@@ -49,7 +49,7 @@ id liffId   type  url
 display same type and url liff applications.
 
 ```
-./exe/liff_select same
+$ bundle exec liff_select same
 > "type": full, "url": https://example.com
  - id: 1, liffId: XXXXXXXXXX-XXXXXXXX
 > "type": tall, "url": https://esample.com/1
@@ -60,7 +60,7 @@ display same type and url liff applications.
 create new liff application. give type, url
 
 ```
-./exe/liff_select create compact https://example.com
+$ bundle exec liff_select create compact https://example.com
 > make liff app
 > [SUCESS] make app
 > app uri : line://app/XXXXXXXXXX-XXXXXXXX
@@ -70,7 +70,7 @@ create new liff application. give type, url
 delete liff application
 
 ```
-./exe/liff_select delete 1
+$ bundle exec liff_select delete 1
 1. XXXXXXXXXX-XXXXXXXX  compact https://example.com
 > [SUCESS] delete app
 ```
@@ -79,7 +79,7 @@ delete liff application
 delete same type and url applications
 
 ```
-./exe/liff_select clean
+$ bundle exec liff_select clean
 > "type": tall, "url": https://liff-a4geru.c9users.io/charge
  - id: 1, liffId: 1578425738-8AM1APKY
 > "type": compact, "url": https://liff-a4geru.c9users.io/
