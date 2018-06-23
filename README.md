@@ -2,8 +2,6 @@
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/liff_selector`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -35,6 +33,24 @@ $ export LINE_TOKEN="line_access_token"
 
 ## Usage
 
+### create
+create new liff html. give file name
+
+```
+$ bundle exec liff_select create index
+> > [SUCESS] make ./index
+```
+
+### upload
+upload new liff application. give type, url
+
+```
+$ bundle exec liff_select upload compact https://example.com
+> make liff app
+> [SUCESS] make app
+> app uri : line://app/XXXXXXXXXX-XXXXXXXX
+```
+
 ### show
 display all liff applications.
 
@@ -43,6 +59,15 @@ $ $ bundle exec liff_select show
 id liffId   type  url
 1. 1578425738-81wbQ6WM  full  https://example.com
 2. 1578425738-8AM1APKY  tall  https://esample.com/1
+```
+
+### delete
+delete liff application
+
+```
+$ bundle exec liff_select delete 1
+1. XXXXXXXXXX-XXXXXXXX  compact https://example.com
+> [SUCESS] delete app
 ```
 
 ### same
@@ -54,25 +79,6 @@ $ bundle exec liff_select same
  - id: 1, liffId: XXXXXXXXXX-XXXXXXXX
 > "type": tall, "url": https://esample.com/1
  - id: 2, liffId: XXXXXXXXXX-XXXXXXXX
-```
-
-### create
-create new liff application. give type, url
-
-```
-$ bundle exec liff_select create compact https://example.com
-> make liff app
-> [SUCESS] make app
-> app uri : line://app/XXXXXXXXXX-XXXXXXXX
-```
-
-### delete
-delete liff application
-
-```
-$ bundle exec liff_select delete 1
-1. XXXXXXXXXX-XXXXXXXX  compact https://example.com
-> [SUCESS] delete app
 ```
 
 ### clean
