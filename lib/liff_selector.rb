@@ -53,7 +53,7 @@ module LiffSelector
   end
 
   def self.create(file_name:)
-    sample = File.join( File.dirname(__FILE__), './assets/sample.html')
+    sample = File.read(File.join( File.dirname(__FILE__), '/assets/sample.html'))
     File.write("#{file_name}.html", sample)
     puts "> [SUCESS] make ./#{file_name}.html"
   end
