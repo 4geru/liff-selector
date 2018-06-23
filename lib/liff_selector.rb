@@ -11,14 +11,16 @@ module LiffSelector
       show
     when 'same'
       same
-    when 'create'
+    when 'upload'
       raise ArgumentError, 'give _type_ _url_' if argv.length != 3
-      create(type: argv[1], url: argv[2])
+      upload(type: argv[1], url: argv[2])
     when 'clean'
       clean
     when 'delete'
       raise ArgumentError, 'give _liff_id_' if argv.length != 2
       delete(liff_id: argv[1])
+    when 'help'
+      help
     else 
       raise NotImplementedError, 'unknow command given'
     end
@@ -47,7 +49,7 @@ module LiffSelector
     }.flatten!
   end
 
-  def self.create(type:, url:)
+  def self.upload(type:, url:)
     raise ArgumentError, 'not correct uri' unless correct_url?(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
     puts '> make liff app'
@@ -75,6 +77,21 @@ module LiffSelector
     rescue
       puts '> [FAILED] cannot delete app'
     end
+  end
+
+  def self.help
+    help =
+<<'EOS'
+liff_select show                  : display all apps
+liff_select same                  : display same url and type apps
+liff_select clean                 : delete same url and type apps
+liff_select upload _TYPE_ _URL_   : upload new apps with type and url.
+                                  : type is <type:compact|tall:|full>
+liff_select delete _LIFF_ID_      : delete app _LIFF_ID_ is referenced show number.
+liff_select help                  : liff_select helps
+liff_select new _html_name_       : make liff sample html
+EOS
+    puts help
   end
 
   def self.delete(liff_id:)
