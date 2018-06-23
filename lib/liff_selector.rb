@@ -21,6 +21,9 @@ module LiffSelector
       delete(liff_id: argv[1])
     when 'help'
       help
+    when 'create'
+      raise ArgumentError, 'give _file_name_' if argv.length != 2
+      create(file_name: argv[1])
     else 
       raise NotImplementedError, 'unknow command given'
     end
@@ -47,6 +50,12 @@ module LiffSelector
       same_apps.map{|app| puts " - id: #{app['id']}, liffId: #{app['liffId']}" }
       same_apps[1..-1]
     }.flatten!
+  end
+
+  def self.create(file_name:)
+    sample = File.read('./assets/sample.html')
+    File.write("#{file_name}.html", sample)
+    puts "> make ./#{file_name}.html"
   end
 
   def self.upload(type:, url:)
