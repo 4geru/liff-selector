@@ -34,7 +34,7 @@ module LiffSelector
   def self.show
     puts "id liffId\t\ttype\turl"
     all_apps.each_with_index do |app, i|
-      puts "#{i+1}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
+      puts "#{i+1}. #{app["liffId"]}\t#{app["view"]["type"]}\t#{app["view"]["url"]}"
     end
   end
 
