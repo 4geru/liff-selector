@@ -50,6 +50,27 @@ describe LiffSelector do
     it { expect { subject }.to output(/delete/).to_stdout }
     it { expect { subject }.to output(/help/).to_stdout }
     it { expect { subject }.to output(/new/).to_stdout }
-    it { expect { subject }.to output(/liff_select/).to_stdout }    
+    it { expect { subject }.to output(/liff_select/).to_stdout }
+  end
+
+  describe '#upload' do
+    context 'argument error' do
+      it { expect{LiffSelector.run(['upload'])}.to raise_error(ArgumentError) }
+      it { expect{LiffSelector.run(['upload', 'compact'])}.to raise_error(ArgumentError) }
+      it { expect{LiffSelector.upload(type: 'hoge' ,url: 'https://example.com') }.to raise_error(ArgumentError) }
+    end
+
+    context 'upload' do
+      subject{ LiffSelector.upload(type: 'compact' ,url: 'https://example.com') }
+      before do
+        # GETリクエストのスタブ登録
+        WebMock.stub_request(:post, request_url).to_return(
+          body: {liffId: 'LIFF_ID'}.to_json,
+          status: 200,
+          headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+      end
+      it { expect { subject }.to output(/SUCCESS/).to_stdout }
+      it { expect { subject }.to output(/app uri : line:\/\/app\/LIFF_ID/).to_stdout }
+    end
   end
 end

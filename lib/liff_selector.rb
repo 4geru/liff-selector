@@ -1,6 +1,7 @@
 require "liff_selector/version"
 require 'json'
 require 'rest-client'
+require 'dotenv/load'
 
 module LiffSelector
   @token = ENV['LINE_TOKEN']
@@ -59,7 +60,6 @@ module LiffSelector
   end
 
   def self.upload(type:, url:)
-    raise ArgumentError, 'not correct uri' unless correct_url?(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
     puts '> make liff app'
 
@@ -67,7 +67,7 @@ module LiffSelector
     response = RestClient.post(@request_url, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
     result = JSON.parse(response)
 
-    puts '> [SUCESS] make app'
+    puts '> [SUCCESS] make app'
     puts "> app uri : line://app/#{result['liffId']}"
   end
 
@@ -115,10 +115,5 @@ EOS
   # http request
   def self.all_apps
     res = JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
-  end
-
-  def self.correct_url?(url)
-    uri = URI.parse(url)
-    status_code = RestClient.get(url)
   end
 end
