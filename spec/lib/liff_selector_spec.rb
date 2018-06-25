@@ -73,4 +73,20 @@ describe LiffSelector do
       it { expect { subject }.to output(/app uri : line:\/\/app\/LIFF_ID/).to_stdout }
     end
   end
+
+  describe '#same' do
+    # TODO
+  end
+
+  describe '#create' do
+    # TODO
+  end
+
+  describe '#clean' do
+    # TODO
+  end
+
+  describe '#delete' do
+    # TODO
+  end
 end
