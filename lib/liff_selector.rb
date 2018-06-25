@@ -97,7 +97,7 @@ liff_select clean                 : delete same url and type apps
 liff_select upload _TYPE_ _URL_   : upload new apps with type and url.
                                   : type is <type:compact|tall:|full>
 liff_select delete _LIFF_ID_      : delete app _LIFF_ID_ is referenced show number.
-liff_select help                  : liff_select helps
+liff_select help                  : commands helps
 liff_select new _html_name_       : make liff sample html
 EOS
     puts help
