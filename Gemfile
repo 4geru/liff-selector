@@ -11,5 +11,4 @@ group :test do
   # HTTP requests用のモックアップを作ってくれる
   gem 'rspec'
   gem 'webmock'
-  gem 'vcr'
 end

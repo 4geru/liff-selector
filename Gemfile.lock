@@ -46,7 +46,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    vcr (4.0.0)
     webmock (3.4.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -62,7 +61,6 @@ DEPENDENCIES
   rake (~> 10.0)
   rest-client
   rspec
-  vcr
   webmock
 
 BUNDLED WITH
