@@ -104,6 +104,7 @@ EOS
   end
 
   def self.delete(liff_id:)
+    # [TODO] undefined liff_id
     app = all_apps[liff_id.to_i-1]
     puts "#{liff_id}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
 

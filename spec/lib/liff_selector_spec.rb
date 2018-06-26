@@ -8,7 +8,6 @@ WebMock.enable!
 describe LiffSelector do
   let(:request_url){ 'https://api.line.me/liff/v1/apps' }
   let(:app){ JSON.parse({liffId: 'LIFF_ID', view:{type: 'TYPE', url: 'URL'}}.to_json) }
-  let(:apps){ {apps: [app] } }
   context 'unknown command' do
     subject{ LiffSelector.run(['unknown']) }
     it { expect{subject}.to raise_error(NotImplementedError) }
@@ -27,9 +26,8 @@ describe LiffSelector do
   describe '#all_apps' do
     subject{ LiffSelector.all_apps }
     before do
-      # GETリクエストのスタブ登録
       WebMock.stub_request(:get, request_url).to_return(
-        body: apps.to_json,
+        body: {apps: [app]}.to_json,
         status: 200,
         headers: { 'bearer' =>  ENV['LINE_TOKEN']})
     end
@@ -59,34 +57,73 @@ describe LiffSelector do
       it { expect{LiffSelector.run(['upload', 'compact'])}.to raise_error(ArgumentError) }
       it { expect{LiffSelector.upload(type: 'hoge' ,url: 'https://example.com') }.to raise_error(ArgumentError) }
     end
-
-    context 'upload' do
-      subject{ LiffSelector.upload(type: 'compact' ,url: 'https://example.com') }
-      before do
-        # GETリクエストのスタブ登録
-        WebMock.stub_request(:post, request_url).to_return(
-          body: {liffId: 'LIFF_ID'}.to_json,
-          status: 200,
-          headers: { 'bearer' =>  ENV['LINE_TOKEN']})
-      end
-      it { expect { subject }.to output(/SUCCESS/).to_stdout }
-      it { expect { subject }.to output(/app uri : line:\/\/app\/LIFF_ID/).to_stdout }
+    subject{ LiffSelector.upload(type: 'compact' ,url: 'https://example.com') }
+    before do
+      WebMock.stub_request(:post, request_url).to_return(
+        body: {liffId: 'LIFF_ID'}.to_json,
+        status: 200,
+        headers: { 'bearer' =>  ENV['LINE_TOKEN']})
     end
+    it { expect { subject }.to output(/[SUCCESS]/).to_stdout }
+    it { expect { subject }.to output(/app uri : line:\/\/app\/LIFF_ID/).to_stdout }
   end
 
   describe '#same' do
-    # TODO
+    subject{ LiffSelector.same }
+    before do
+      # GETリクエストのスタブ登録
+      WebMock.stub_request(:get, request_url).to_return(
+        body: {apps: [app, app]}.to_json,
+        status: 200,
+        headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+    end
+
+    it { expect { subject }.to output(/- id:/).to_stdout }
+    it { expect { subject }.to output(/> "type": TYPE, "url": URL/).to_stdout }
   end
 
   describe '#create' do
-    # TODO
+    subject{ LiffSelector.create(file_name: 'FILENAME') }
+    before do
+      allow(File).to receive(:read).and_return( nil )
+      allow(File).to receive(:join).and_return( nil )
+      allow(File).to receive(:dirname).and_return( nil )
+      allow(File).to receive(:write).and_return( nil )
+    end
+
+    it { expect { subject }.to output(/[SUCCESS]/).to_stdout }
+    it { expect { subject }.to output(/FILENAME.html/).to_stdout }
   end
 
   describe '#clean' do
-    # TODO
+    context 'not same app' do
+      before do
+        allow(LiffSelector).to receive(:same).and_return([])
+      end
+      it { expect { LiffSelector.clean }.to raise_error(ArgumentError) }
+    end
+
+    context 'sccess' do
+      before do
+        allow(LiffSelector).to receive(:same).and_return([app])
+        WebMock.stub_request(:delete, "#{request_url}/#{app['liffId']}").to_return(
+          status: 200,
+          headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+      end
+      it { expect { LiffSelector.clean }.to output(/[SUCESS]/).to_stdout }
+    end
   end
 
   describe '#delete' do
-    # TODO
+    subject { LiffSelector.delete(liff_id: 1) }
+    context 'success' do
+      before do
+        allow(LiffSelector).to receive(:all_apps).and_return( [app] )
+      end
+      it { expect { subject }.to output(/[SUCESS]/).to_stdout }
+      it { expect { subject }.to output(/#{app['liffId']}/).to_stdout }
+      it { expect { subject }.to output(/#{app['view']['type']}/).to_stdout }
+      it { expect { subject }.to output(/#{app['view']['url']}/).to_stdout }
+    end
   end
 end
