@@ -1,6 +1,7 @@
 require "liff_selector/version"
 require 'json'
 require 'rest-client'
+require 'dotenv/load'
 
 module LiffSelector
   @token = ENV['LINE_TOKEN']
@@ -34,7 +35,7 @@ module LiffSelector
   def self.show
     puts "id liffId\t\ttype\turl"
     all_apps.each_with_index do |app, i|
-      puts "#{i+1}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
+      puts "#{i+1}. #{app["liffId"]}\t#{app["view"]["type"]}\t#{app["view"]["url"]}"
     end
   end
 
@@ -59,7 +60,6 @@ module LiffSelector
   end
 
   def self.upload(type:, url:)
-    raise ArgumentError, 'not correct uri' unless correct_url?(url)
     raise ArgumentError, 'not correct type please choose [compact, tall, full]' unless ["compact", "tall", "full"].include?(type)
     puts '> make liff app'
 
@@ -67,7 +67,7 @@ module LiffSelector
     response = RestClient.post(@request_url, {view: {type: type, url: url } }.to_json, {:Authorization => "bearer #{@token}", :content_type => :json})
     result = JSON.parse(response)
 
-    puts '> [SUCESS] make app'
+    puts '> [SUCCESS] make app'
     puts "> app uri : line://app/#{result['liffId']}"
   end
 
@@ -97,13 +97,14 @@ liff_select clean                 : delete same url and type apps
 liff_select upload _TYPE_ _URL_   : upload new apps with type and url.
                                   : type is <type:compact|tall:|full>
 liff_select delete _LIFF_ID_      : delete app _LIFF_ID_ is referenced show number.
-liff_select help                  : liff_select helps
+liff_select help                  : commands helps
 liff_select new _html_name_       : make liff sample html
 EOS
     puts help
   end
 
   def self.delete(liff_id:)
+    # [TODO] undefined liff_id
     app = all_apps[liff_id.to_i-1]
     puts "#{liff_id}. #{app['liffId']}\t#{app['view']['type']}\t#{app['view']['url']}"
 
@@ -115,10 +116,5 @@ EOS
   # http request
   def self.all_apps
     res = JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
-  end
-
-  def self.correct_url?(url)
-    uri = URI.parse(url)
-    status_code = RestClient.get(url)
   end
 end
