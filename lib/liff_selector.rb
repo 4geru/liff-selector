@@ -115,6 +115,8 @@ EOS
 
   # http request
   def self.all_apps
-    res = JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
+    JSON.parse(RestClient.get @request_url, { :Authorization => "bearer #{@token}" })['apps']
+  rescue => e
+    []
   end
 end
