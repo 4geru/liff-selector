@@ -54,9 +54,10 @@ module LiffSelector
   end
 
   def self.create(file_name:)
+    FileUtils.mkdir_p('./views') unless FileTest.exist?('./views')
     sample = File.read(File.join( File.dirname(__FILE__), '/assets/sample.html'))
-    File.write("#{file_name}.html", sample)
-    puts "> [SUCESS] make ./#{file_name}.html"
+    File.write("./views/#{file_name}.erb", sample)
+    puts "> [SUCESS] make ./views/#{file_name}.erb"
   end
 
   def self.upload(type:, url:)
