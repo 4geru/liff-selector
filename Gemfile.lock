@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    liff_selector (1.0.0)
+    liff_selector (1.0.1)
       dotenv
       rest-client
 
