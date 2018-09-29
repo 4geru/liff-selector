@@ -28,7 +28,7 @@ line_acces_token write next figure place.
 setting envrioment variable in shell.
 
 ```
-$ export LINE_TOKEN="line_access_token"
+$ export LINE_CHANNEL_TOKEN="line_access_token"
 ```
 
 ## Usage

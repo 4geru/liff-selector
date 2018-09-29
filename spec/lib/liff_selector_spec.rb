@@ -29,7 +29,7 @@ describe LiffSelector do
       WebMock.stub_request(:get, request_url).to_return(
         body: {apps: [app]}.to_json,
         status: 200,
-        headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+        headers: { 'bearer' =>  ENV['LINE_CHANNEL_TOKEN']})
     end
     context 'app count' do
       it { expect(subject.length).to eq 1 }
@@ -62,7 +62,7 @@ describe LiffSelector do
       WebMock.stub_request(:post, request_url).to_return(
         body: {liffId: 'LIFF_ID'}.to_json,
         status: 200,
-        headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+        headers: { 'bearer' =>  ENV['LINE_CHANNEL_TOKEN']})
     end
     it { expect { subject }.to output(/[SUCCESS]/).to_stdout }
     it { expect { subject }.to output(/app uri : line:\/\/app\/LIFF_ID/).to_stdout }
@@ -75,7 +75,7 @@ describe LiffSelector do
       WebMock.stub_request(:get, request_url).to_return(
         body: {apps: [app, app]}.to_json,
         status: 200,
-        headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+        headers: { 'bearer' =>  ENV['LINE_CHANNEL_TOKEN']})
     end
 
     it { expect { subject }.to output(/- id:/).to_stdout }
@@ -108,7 +108,7 @@ describe LiffSelector do
         allow(LiffSelector).to receive(:same).and_return([app])
         WebMock.stub_request(:delete, "#{request_url}/#{app['liffId']}").to_return(
           status: 200,
-          headers: { 'bearer' =>  ENV['LINE_TOKEN']})
+          headers: { 'bearer' =>  ENV['LINE_CHANNEL_TOKEN']})
       end
       it { expect { LiffSelector.clean }.to output(/[SUCESS]/).to_stdout }
     end

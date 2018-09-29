@@ -4,7 +4,7 @@ require 'rest-client'
 require 'dotenv/load'
 
 module LiffSelector
-  @token = ENV['LINE_TOKEN']
+  @token = ENV['LINE_CHANNEL_TOKEN']
   @request_url = 'https://api.line.me/liff/v1/apps'
   def self.run(argv)
     case argv[0]
