@@ -92,7 +92,7 @@ describe LiffSelector do
     end
 
     it { expect { subject }.to output(/[SUCCESS]/).to_stdout }
-    it { expect { subject }.to output(/FILENAME.html/).to_stdout }
+    it { expect { subject }.to output(/FILENAME.erb/).to_stdout }
   end
 
   describe '#clean' do
