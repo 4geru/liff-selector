@@ -1,0 +1,13 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+    - image: bash
+    steps:
+    - run: "echo 'testing building...'"
+
+workflows:
+  main:
+    jobs:
+    - build
